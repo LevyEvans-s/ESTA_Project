@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 import Home from '../views/home.vue'
 import Login from '../views/login&register/login.vue'
 
-
 Vue.use(VueRouter)
 
 const routes = [

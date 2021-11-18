@@ -17,18 +17,18 @@
                     <i class="iconfont icon-mima"></i><input type="password" placeholder="请输入密码" v-model="password"> 
                   </div>
                   <div class="input">
-                    <i class="iconfont icon-yanzhengyanzhengma"></i><input type="text" placeholder="请输入验证码">     
+                    <i class="iconfont icon-yanzhengyanzhengma"></i><input type="text" placeholder="请输入验证码" v-model="verification">     
                   </div>
                   <div class="verification">
                       <img src="../../../public/imgs/验证码.png" alt="">                    
                   </div>
-                  <span>换一批</span>
+                  <span>换一张</span>
               </div>
           </div>
           <div class="checkbox">
-              <input type="checkbox" name="" id=""> &nbsp;&nbsp;&nbsp;已阅读并同意《用户协议》和《隐私政策》
+              <input type="checkbox" name="" id="" v-model="checked"> &nbsp;&nbsp;&nbsp;已阅读并同意《用户协议》和《隐私政策》
           </div>
-          <button class="login-button" @click="login">登录</button>
+          <el-button type="text" class="login-button" @click="login">登录</el-button>
           <div class="remark">
               <span>忘记密码?</span>
               <div>
@@ -41,27 +41,60 @@
 </template>
 
 <script>
+import  {getUserInfoAPI}  from '@/api/api.js'
+
 export default {
     name:'Login',
     data(){
         return {
             username:'',
-            password:'',
-            cookie:'' 
+            password:'', 
+            verification:'',
+            checked:false
         }
     },
-    methods:{
-        //模拟登录(采用token验证)
-        login(){
-            if(this.username==='admin'&&this.password==='123'){
-                this.$router.push('/home')
+    computed:{
+        verify(){
+            if(!this.username||!this.password){
+                return {flag:false,msg:'用户名或密码不能为空'}
             }
-        },
-        toRegister(){
-            this.$router.push('/register')
+            if(!this.checked){
+                return {flag:false,msg:'请先阅读并勾选协议'}
+            }
+            if(!this.verification||this.verification!='51by'){
+                return {flag:false,msg:'验证码错误,请重新输入'}
+            }
+            return {flag:true,msg:'post'}
         }
     },
-}
+     methods: {
+         login() {
+            //  //登录前的预校验,判断是否发起请求
+            //  if(!this.verify.flag){
+            //      this.$msgbox.alert(this.verify.msg, '登录失败', {
+	        //         confirmButtonText: '确定',
+	        //         callback: action => {}
+            //         })
+            //  }else{
+            //      //向服务端发送post请求,
+            //      if(this.username==='admin'&&this.password==='123'){
+            //          alert('登录成功,即将跳转')
+            //          this.$router.push('/home')
+            //      }else{
+            //         //  this.$msgbox.alert(不存在此用户, '登录失败', {
+	        //         // confirmButtonText: '确定',
+	        //         // callback: action => {}
+            //         // })
+            //         alert('登录失败')
+            //      }
+            //  }
+            getUserInfoAPI().then(res=>{console.log(res)}).catch(err=>console.log(err)) 
+        },
+         toRegister(){
+             this.$router.push('/register')
+         }
+    }
+}   
 </script>
 
 <style lang="scss" scoped>
