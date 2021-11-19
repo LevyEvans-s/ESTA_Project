@@ -9,24 +9,23 @@
               <h3>
                   <span class="checked">登录</span>
               </h3>
-              <div class="input-area">
-                  <div class="input">
-                    <i class="iconfont icon-jurassic_user"></i><input type="text" placeholder="请输入帐号" v-model="username">
-                  </div>
-                  <div class="input">
-                    <i class="iconfont icon-mima"></i><input type="password" placeholder="请输入密码" v-model="password"> 
-                  </div>
-                  <div class="input">
-                    <i class="iconfont icon-yanzhengyanzhengma"></i><input type="text" placeholder="请输入验证码" v-model="verification">     
-                  </div>
-                  <div class="verification">
-                      <img src="../../../public/imgs/验证码.png" alt="">                    
-                  </div>
-                  <span>换一张</span>
+              <el-form :label-position="labelPosition" :model="ruleForm" :rules="rules" label-width="80px" class="form">
+                  <el-form-item label="用户名" prop="username">
+                      <el-input v-model="ruleForm.username"  placeholder="请输入用户名" class="input"></el-input>
+                  </el-form-item>
+                  <el-form-item label="密码" prop="password">
+                      <el-input v-model="ruleForm.password"  placeholder="请输入密码" class="input" type="password"></el-input>
+                  </el-form-item>
+                  <el-form-item label="验证码"  prop="verification">
+                      <el-input v-model="ruleForm.verification" class="verifyCode" placeholder="请输入验证码"></el-input>
+                  </el-form-item>
+              </el-form>
+              <div class="codeImg">
+                  <img src="../../../public/imgs/验证码.png" alt=""><span>换一个</span>
               </div>
-          </div>
-          <div class="checkbox">
-              <input type="checkbox" name="" id="" v-model="checked"> &nbsp;&nbsp;&nbsp;已阅读并同意《用户协议》和《隐私政策》
+              <div class="checkbox">
+                   <input type="checkbox" name="" id="" v-model="checked"><span @click="changeChecked">已阅读并同意《用户协议》和《隐私政策》</span>
+              </div>
           </div>
           <el-button type="text" class="login-button" @click="login">登录</el-button>
           <div class="remark">
@@ -41,57 +40,69 @@
 </template>
 
 <script>
-import  {getUserInfoAPI}  from '@/api/api.js'
+import  {postUserLoginInfo}  from '@/api/api.js'
 
 export default {
     name:'Login',
     data(){
         return {
-            username:'',
-            password:'', 
-            verification:'',
-            checked:false
-        }
-    },
-    computed:{
-        verify(){
-            if(!this.username||!this.password){
-                return {flag:false,msg:'用户名或密码不能为空'}
+            checked:false,
+            labelPosition: 'left',
+            userInfo:{
+                username:'',
+                password:'',
+            },
+            ruleForm:{
+                username:'',
+                password:'', 
+                verification:'',
+            },
+            rules:{
+                username:[
+                    {required:true,message:'用户名不能为空',trigger:'blur'}
+                ],
+                password:[
+                    {required:true,message:'密码不能为空',trigger:'blur'}
+                ],
+                verification:[
+                    {required:true,message:'请输入正确的验证码',trigger:'blur'}
+                ],
+                checked:[
+                    {require:true,message:'请先勾选协议',trigger:'change'}
+                ]
             }
-            if(!this.checked){
-                return {flag:false,msg:'请先阅读并勾选协议'}
-            }
-            if(!this.verification||this.verification!='51by'){
-                return {flag:false,msg:'验证码错误,请重新输入'}
-            }
-            return {flag:true,msg:'post'}
         }
     },
      methods: {
-         login() {
-            //  //登录前的预校验,判断是否发起请求
-            //  if(!this.verify.flag){
-            //      this.$msgbox.alert(this.verify.msg, '登录失败', {
-	        //         confirmButtonText: '确定',
-	        //         callback: action => {}
-            //         })
-            //  }else{
-            //      //向服务端发送post请求,
-            //      if(this.username==='admin'&&this.password==='123'){
-            //          alert('登录成功,即将跳转')
-            //          this.$router.push('/home')
-            //      }else{
-            //         //  this.$msgbox.alert(不存在此用户, '登录失败', {
-	        //         // confirmButtonText: '确定',
-	        //         // callback: action => {}
-            //         // })
-            //         alert('登录失败')
-            //      }
-            //  }
-            getUserInfoAPI().then(res=>{console.log(res)}).catch(err=>console.log(err)) 
+         changeChecked(){
+             this.checked=!this.checked
+         },
+         login(){
+             //登录前校验是否勾选用户协议
+            if(!this.checked){
+                return this.$msgbox.alert('请先勾选用户协议!','登录失败',{
+                    confirmButtonText: '确定'
+                })    
+            }
+            let {username,password}=this.userInfo
+            //创建element-ui loading实例对象
+            const loadingInstance=this.$loading.service({fullscreen:true,lock:true})
+
+            //向后端登录接口发送post请求
+            postUserLoginInfo({username,password})
+                    .then(res=>{
+                        console.log(res)    //检验服务端返回的信息
+                        this.$cookie.set('userId',res.id,{expires:'1M'}) //保存cookie
+                        /**
+                         * to-do:使用Vuex托管用户信息,防止跳转到首页后页面刷新数据丢失,实现用户信息展示
+                         * 
+                         */
+                        this.$router.push('/home') 
+                    })
+            loadingInstance.close() //关闭loading
         },
          toRegister(){
-             this.$router.push('/register')
+             this.$router.push('/register') 
          }
     }
 }   
@@ -133,80 +144,60 @@ export default {
                         margin-left: 170px;
                     }
                 }
-                .input-area{
+                .form{
                     position: absolute;
-                    width: 400px;
-                    height: 162px;
-                    margin-top:14px;
+                    top: 60px; 
                     .input{
-                        display:inline-block;
-                        width:100%;
-                        height:40px;
-                        margin-bottom:21px;
-                        background-color: rgba(221, 221, 221, 0.4000000059604645);
-                        position: relative;
-                        i{
-                            display: inline-block;
-                            position: absolute;
-                            margin-left: 20px;
-                            margin-top: 11px;
-                            font-size: 18px;
-                        }
-                        input{
-                            display: inline-block;
-                            width: 340px;
-                            height: 100%;
-                            margin-left: 58px;
-                            background-color: rgba(221, 221, 221, 0.4000000059604645);
-                            border: none;
-                            text-indent: 1em;
-                        }
-                        &:nth-child(3){
-                            width: 160px;
-                            height: 40px;
-                            input{
-                                width:102px;
-                            }
+                        width: 320px;
+                    }  
+                    .verifyCode{
+                        width: 120px;
+                    }           
+                } 
+                .checkbox {
+                    width: 400px;
+                    height: 24px;
+                    position: absolute;
+                    left: 65px;
+                    top:240px;
+                    font-size:16px;
+                    color:#333333;
+                    input{
+                        width: 16px;
+                        height: 16px;
+                        vertical-align: middle;
+                        margin-right: 10px;
+                        cursor: pointer;
+                    }
+                    span{
+                        &:hover{
+                            cursor: pointer;
                         }
                     }
-                    .verification{
+                }
+                .codeImg{
+                    position: absolute;
+                    width: 200px;
+                    height: 40px;
+                    left:210px;
+                    top: 183px;
+                    img{ 
                         width: 160px;
                         height: 40px;
+                    }
+                    span{
                         display: inline-block;
                         position: absolute;
-                        margin-left: 31px;
-                        img{
-                            width: 100%;
-                            height: 100%;
-                        }
-                    }
-                    &>span{                      
-                        display: inline-block;
-                        margin-left: 195px;
+                        bottom:12px;
+                        right:-5px;
                         &:hover{
-                            color:#AF3C3C;
                             cursor: pointer;
+                            color: #AF3C3C;
                         }
                     }
                 }              
             }
-            .checkbox{
-                display: inline-block;
-                width: 400px;
-                height: 24px;
-                position: absolute;    
-                line-height: 24px;
-                font-size:16px;
-                color:rgba(51, 51, 51, 0.800000011920929);
-                left:99px;
-                bottom:190px;
-                input{
-                    width: 22px;
-                    height: 22px;
-                    vertical-align: middle;
-                    margin-left: 20px;
-                }
-            }
+            
             .login-button{
                 display: inline-block;
                 position: absolute;

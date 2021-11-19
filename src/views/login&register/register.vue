@@ -63,18 +63,10 @@
                 </div>
                 <span class="vccode-info">换一张</span>
               </el-form-item>
-              <div class="confirm">
-                <el-form>
-                  <el-checkbox
-                    label="已阅读并同意《用户协议》 和 《隐私条款》"
-                    name="type"
-                  ></el-checkbox>
-                </el-form>
-              </div>
               <div class="reg_bottom">
                 <el-form
                   ><el-form-item>
-                    <el-button type="primary" class="register-button">注册</el-button>
+                    <el-button type="primary" class="register-button" @click="register">注册</el-button>
                   </el-form-item></el-form
                 >
               </div>
@@ -90,11 +82,15 @@
 
 <script>
 import $ from 'jquery/dist/jquery.min.js'
-
+import  {postUserRegisterInfo}  from '@/api/api.js'
 export default {
   name:'Register',
   data() {
     return {
+      userInfo:{
+        username:'',
+        password:''
+      },
       registerForm: {},
       // 表单验证
       registerFormRules: {
@@ -251,9 +247,23 @@ export default {
     },
     toLogin(){
       this.$router.push('/login')
-    }
-  },
-};
+    },
+    register(){
+      const loadingInstance=this.$loading.service({fullscreen:true,lock:true})
+      let {username,password}=this.userInfo
+      //向后端注册接口发送post请求
+      postUserRegisterInfo({username,password})
+          .then(res=>{
+              this.$message({
+                  message:'恭喜你,注册成功!',
+                  type:'success'
+                }
+              )
+          }),
+      loadingInstance.close()
+    },
+  }
+}
 </script>
 
 
@@ -440,7 +450,7 @@ a {
 }
 </style>
 
-<style >
+<style>
 .el-checkbox__input.is-checked + .el-checkbox__label {
   color: #af3c3c;
 }

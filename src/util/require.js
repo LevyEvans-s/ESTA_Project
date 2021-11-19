@@ -2,7 +2,7 @@
 import axios from 'axios'
 
 const service = axios.create({
-    baseURL: '  https://mock.mengxuegu.com/mock/6191ecedf126df7bfd5b7893/api',
+    baseURL: '  http://localhost:4000',
     timeout:3000
 })
 
@@ -15,10 +15,16 @@ service.interceptors.request.use(config => {
     Promise.reject(err)
 })
 
-//配置响应拦截器
-service.interceptors.response.use(res => {
-    //请求成功
-    return res.data
+//接口错误拦截
+service.interceptors.response.use(response => {
+    let res = response.data
+    let path=location.hash
+    if(res.status==0) return res.data
+    else if (res.status == 10) { //status:10  msg:"NEED_LOGIN"
+        if (path != '#/index') {
+            window.location.href='/#/login'
+        }
+    }
 }, err => {
     //响应失败
     return Promise.resolve(err.response)

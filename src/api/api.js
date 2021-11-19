@@ -1,10 +1,21 @@
-//正式封装API,用于发送请求
 import http from '../util/http'
 
-let getUserInfoAPI=function(){
-    return http.get('/api1')
+//拉取用户信息
+let getUserInfo=function(params){
+    return http.get('/user',params)
 }
-//全部导出
+
+//向后端登录接口发送post请求
+let postUserLoginInfo = function (data) {
+    return http.post('/login',data)
+}
+//向后端注册接口发送post请求
+let postUserRegisterInfo = function (data) {
+    return http.post('/register',data)
+}
+
 export {
-   getUserInfoAPI
+    getUserInfo,
+    postUserLoginInfo,
+    postUserRegisterInfo
 }

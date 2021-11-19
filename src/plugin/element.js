@@ -1,11 +1,11 @@
 import Vue from 'vue'
-import { Button,MessageBox } from 'element-ui'
-import { Form, FormItem, Input,Tabs } from 'element-ui'
-
+import { Button,MessageBox,Form, FormItem, Input,Tabs,Loading,Checkbox,Message} from 'element-ui'
 Vue.use(Button)
 Vue.use(Form)
 Vue.use(FormItem)
 Vue.use(Input)
 Vue.use(Tabs)
-
-Vue.prototype.$msgbox = MessageBox;
+Vue.use(Checkbox)
+Vue.prototype.$loading=Loading
+Vue.prototype.$msgbox = MessageBox
+Vue.prototype.$message=Message

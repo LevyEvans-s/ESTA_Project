@@ -1,6 +1,7 @@
 //封装http请求
 
 //导入封装好的axios
+import { post } from 'jquery'
 import require from './require'
 
 const http={
@@ -10,10 +11,16 @@ const http={
             url:url
         }
         if (params) config.params = params
-        console.log(config)
+        return require(config)
+    },
+    post(url, data) {
+        const config = {
+            method: 'post',
+            url: url,
+        }
+        if (data) config.data = data
         return require(config)
     }
-
 }
 
 export default http
