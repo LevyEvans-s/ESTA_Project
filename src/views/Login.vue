@@ -52,7 +52,6 @@
 export default {
   data() {
     return {
-      // 务必注意：在真实项目中，data 中定义的属性一定要记得进行基础注释
       // 需要采集的用户数据源
       userInfo: {
         username: "",
@@ -88,12 +87,20 @@ export default {
       this.$refs["logincheck"].validate(async (valid) => {
         if (valid) {
           // 在这里我们还需要做一步，本地校验验证码的合法性
-          if (this.userInfo.verification !== this.verification) {
+          if (this.userInfo.verification === this.verification) {
+            //引入element-loading实例
+            let loadingInstance = this.$loading.service({ fullscreen: true })
             // 请求登陆接口
             let res = await this.$axios.get("/login");
-            console.log(res);
-            localStorage.setItem("username", this.userInfo.username)
-            this.$router.push("/home");
+            /**
+             * to-do 向后端登录接口发送post请求 若响应状态码status是200 则登录成功
+             */
+            console.log(res.data)
+            if(res.data.status==200){
+               localStorage.setItem("username", this.userInfo.username)
+               loadingInstance.close() //关闭loading
+               this.$router.push("/home");
+            }
           } else {
             this.$message.error("验证码校验错误");
             return false;

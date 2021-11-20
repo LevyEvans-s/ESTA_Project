@@ -28,7 +28,7 @@
             type="password"
           ></el-input>
         </el-form-item>
-        <el-form-item label="密码" prop="password">
+        <el-form-item label="确认密码" prop="password">
           <el-input
             v-model="userInfo.repassword"
             placeholder="再次输入密码"
@@ -88,8 +88,8 @@ export default {
   methods: {
     // 获取验证码
     async getCode() {
-      let res = await this.$axios.get("/code");
-      this.verification = res.data.code;
+      let res = await this.$axios.get("/code")
+      this.verification = res.data.code
     },
     // 点击登录
     register() {
@@ -97,25 +97,40 @@ export default {
       // 这里一定要注意使用 箭头函数将 this 指向上下文
       this.$refs["logincheck"].validate(async (valid) => {
         if (valid) {
-          // 在这里我们还需要做一步，本地校验验证码的合法性
-          if (this.userInfo.verification !== this.verification) {
-            // 请求登陆接口
-            let res = await this.$axios.get("/register");
-            localStorage.setItem("username", this.userInfo.username)
-            this.$router.push("/home");
-          } else {
-            this.$message.error("验证码校验错误");
-            return false;
-          }
+          if(this.userInfo.password===this.userInfo.repassword){
+              // 在这里我们还需要做一步，本地校验验证码的合法性
+            if (this.userInfo.verification === this.verification) {
+              let loadingInstance = this.$loading.service({ fullscreen: true })
+              // 请求注册接口
+               /**
+               * to-do 向后端注册接口发送post请求 若响应状态码status是200 则注册成功 跳转到首页
+               */           
+              await this.$axios.get("/register").then(res=>{
+                if(res.status===200){              
+                  this.$message.success('注册成功')
+                  localStorage.setItem("username", this.userInfo.username)                 
+                  loadingInstance.close()
+                  this.$router.push('/home')
+                }else if(res.status==404){
+                  this.$message.error("该用户名已存在")
+                }  
+              })
+            } else {
+              this.$message.error("验证码校验错误")
+              return false;
+            }
+          }else{
+            this.$message.error("两次输入的密码不一致")
+          } 
         } else {
-          console.log("error submit!!");
-          return false;
+          console.log("error submit!!")
+          return false
         }
       });
     },
     // 跳转到注册页面
     toLogin() {
-      this.$router.push("/login");
+      this.$router.push("/login")
     },
   },
 };
