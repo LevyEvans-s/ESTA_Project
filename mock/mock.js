@@ -3,7 +3,7 @@ const Mock = require("mockjs");
 const express = require("express");
 const app = express();
 
-//根据传入的参数 num，生成 num 条模拟的数据列表
+// 新闻列表模拟
 function generatorList(num) {
   return Mock.mock({
     [`list|${num}`]: [
@@ -25,10 +25,11 @@ function generatorList(num) {
   });
 }
 
+// 新闻详情模拟
 function newInfo(id) {
   return Mock.mock({
     // 模拟 ID，自增方式追加
-    "id": id,
+    id: id,
     // 模拟标题，中文字符串长度为 20 位到 30 位
     title: "@ctitle(15,25)",
     // 模拟图片索引，自然数从 0 到 15
@@ -40,15 +41,26 @@ function newInfo(id) {
     // 模拟发布时间，时间格式
     date: "@date('yyyy-MM-dd')",
     code: /\d{6}/,
-    cpa: "@cparagraph(5, 10)",
+    cpa: "@cparagraph(55, 100)",
   });
 }
 
+// 登陆成功模拟
 function Login() {
   return Mock.mock({
     username: "@cname(2,10)",
     token: "@guid()",
     msg: "登陆成功",
+    status: 200,
+  });
+}
+
+// 注册成功模拟
+function Register() {
+  return Mock.mock({
+    usernam: "@cname(2,10)",
+    token: "@guid()",
+    msg: "注册成功",
     status: 200,
   });
 }
@@ -62,24 +74,30 @@ app.all("*", function (req, res, next) {
   next();
 });
 
-//截取路由并反馈数据
+//根据 条数 获取新闻列表
 app.get("/data", function (req, res) {
   // 获取 get 请求数据条数参数 num
   const { num } = req.query;
   return res.send(generatorList(num));
 });
 
-//截取路由并反馈数据
+//根据 id 获取新闻详情
 app.get("/info", function (req, res) {
   const { id } = req.query;
   return res.send(newInfo(id));
 });
 
-//截取路由并反馈数据
+//登陆成功返回
 app.get("/login", function (req, res) {
   return res.send(Login());
 });
 
+// 注册成功返回
+app.get("/register", function (req, res) {
+  return res.send(Register());
+});
+
+// 获取验证码
 app.get("/code", function (req, res) {
   return res.send(
     Mock.mock({
@@ -90,7 +108,5 @@ app.get("/code", function (req, res) {
 
 //设置端口并打印对应调用结果
 const server = app.listen(4000, function () {
-  console.log(
-    "本地mock服务启动，接口地址为：http://localhost:4000"
-  );
+  console.log("本地mock服务启动，接口地址为：http://localhost:4000");
 });
