@@ -2,7 +2,7 @@
   <div class="my-header">
     <router-link to="/login">登录</router-link>
     <el-button @click="logout">退出</el-button>
-    <span>{{ username }}</span>
+    <span>当前用户:{{ username }}</span>
   </div>
 </template>
 
