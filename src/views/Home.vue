@@ -114,17 +114,15 @@
                 <div class="footer-cmp">
                   <div class="left-tools">
                     <div class="author">
-                      <a href="javascript:;" v-text=item.from></a>
+                      <a href="javascript:;" v-text=item.subtitle></a>
                     </div>
                     <div class="comment">
-                      <a href="javascript:;" v-text="item.reads"></a>评论
+                      <a href="javascript:;" v-text="item.publishTime"></a>
                     </div>
-                    <div class="time" v-text="item.date"></div>
                   </div>
                 </div>
               </div>
-            </div>
-            
+            </div>           
           </li>
       </ul>
       <div
@@ -135,25 +133,11 @@
       </div>
     </div>
   </div>
-  <!-- 底部
-    <div class="bottom">
-      <div class="bottom-box">
-        <ul class="bottom-left">
-          <li class="text">建议反馈</li>
-          <li class="line">|</li>
-          <li class="text">联系我们</li>
-        </ul>
-        <ul class="bottom-right">
-          <li class="text">Copyright</li>
-          <li class="line">|</li>
-          <li class="text">HHU</li>
-        </ul>
-      </div>
-    </div> -->
 </div>
 </template>
 
 <script>
+import service from "../util/require.js";
 import MyHeader from "../components/MyHeader.vue";
 import HotIssues from "../components/HotIssues.vue";
 export default {
@@ -161,7 +145,8 @@ export default {
   props: {},
   data() {
     return {
-      newsList: [],  
+      id:1,
+      newsList: [],
     }
   },
   components: {
@@ -169,17 +154,21 @@ export default {
     HotIssues,
   },
   created() {
-     this.getNewsList()
+     this.getNewsList(this.id)
   },
   mounted(){
-     
     window.addEventListener('scroll',this.load,true)
   },
   methods: {
-    async getNewsList() {
+    async getNewsList(id) {
       // 请求默认的列表信息
-      let res = await this.$axios.get("/data?num=15")
-      this.newsList= [...this.newsList,...res.data.list]
+      let res = await service.get("/newslist",{
+        params:{
+          id:id
+        }
+      })
+      //console.log(res.data.data.newsList)
+      this.newsList= [...this.newsList,...res.data.data.newsList]
     },
     async load(){
       let scrollTop = document.documentElement.scrollTop||document.body.scrollTop;
@@ -199,7 +188,8 @@ export default {
        //滚动条到底部的条件
        if(scrollTop+windowHeight >= scrollHeight){ 
           let loadingInstance = this.$loading.service({ fullscreen: true });
-          this.getNewsList()
+          this.id+=10
+          this.getNewsList(this.id)
           loadingInstance.close()
        }
     }

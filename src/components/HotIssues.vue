@@ -23,15 +23,17 @@
 </template>
 
 <script>
+import service from "../util/require.js";
 export default {
     data(){
         return{
             newsList:[],
-            videoList:[]
+            videoList:[],
+            id:1
         }
     },
     created(){
-        this.getNewsList()
+        this.getNewsList(this.id)
     },
     methods:{
         scrollHanlder(){
@@ -42,17 +44,30 @@ export default {
                 }else{
                     this.$refs.divBox.style.display="none"
                     this.$refs.fixBox.style.position="static"
-                }   
+                }   s
             }
         },
-        async getNewsList() {
+        async getNewsList(id) {
             // 请求默认的列表信息
-             let res = await this.$axios.get("/data?num=10")
-             this.newsList = res.data.list
+             let res = await service.get("/newslist",{
+                params:{
+                    id
+                }
+             })
+             this.newsList = res.data.data.newsList
         },
         async changeNews(){
-            let res = await this.$axios.get("/data?num=10")
-            this.newsList=res.data.list
+            this.id+=10
+            if(this.id>30){
+                this.id=1
+            }
+            //console.log(this.id)
+            let res = await service.get("/newslist",{
+                params:{
+                    id:this.id
+                }
+            })
+            this.newsList=res.data.data.newsList
         },
         
     },

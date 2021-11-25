@@ -57,6 +57,7 @@
 </template>
 
 <script>
+import service from "../util/require.js";
 export default {
   data() {
     return {
@@ -105,14 +106,20 @@ export default {
                /**
                * to-do 向后端注册接口发送post请求 若响应状态码status是200 则注册成功 跳转到首页
                */           
-              await this.$axios.get("/register").then(res=>{
-                if(res.status===200){              
+              await service.post("/user/register",{
+                username:this.userInfo.username,
+                password:this.userInfo.password
+              }).then(res=>{
+                console.log(res)
+                if(res.data.status===200){              
                   this.$message.success('注册成功')
                   localStorage.setItem("username", this.userInfo.username)                 
                   loadingInstance.close()
                   this.$router.push('/home')
-                }else if(res.status==404){
+                }else if(res.data.status===404){
                   this.$message.error("该用户名已存在")
+                  this.$router.push('/register')
+                  loadingInstance.close()
                 }  
               })
             } else {

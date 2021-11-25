@@ -49,6 +49,7 @@
 </template>
 
 <script>
+import service from "../util/require.js";
 export default {
   data() {
     return {
@@ -91,15 +92,18 @@ export default {
             //引入element-loading实例
             let loadingInstance = this.$loading.service({ fullscreen: true })
             // 请求登陆接口
-            let res = await this.$axios.get("/login");
-            /**
-             * to-do 向后端登录接口发送post请求 若响应状态码status是200 则登录成功
-             */
-            console.log(res.data)
-            if(res.data.status==200){
+            let res = await service.post("/user/login",{
+              username:this.userInfo.username,
+              password:this.userInfo.password
+            });
+            if(res.data.status===200){
                localStorage.setItem("username", this.userInfo.username)
                loadingInstance.close() //关闭loading
                this.$router.push("/home");
+            }else{
+              this.$message.error("用户名或密码错误");
+              loadingInstance.close() //关闭loading
+              this.$router.push("/login");
             }
           } else {
             this.$message.error("验证码校验错误");
