@@ -30,12 +30,8 @@ export default {
       username: "",
     };
   },
-  created() {
-    if (!localStorage.getItem("username")) {
-      this.$router.push("/login");
-    } else {
-      this.username = localStorage.getItem("username");
-    }
+  created() { 
+      this.username = localStorage.getItem("username");  
   },
   mounted(){
     if(localStorage.getItem('username')){
