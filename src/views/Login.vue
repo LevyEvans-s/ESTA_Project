@@ -72,7 +72,7 @@ export default {
     };
   },
   created() {
-    this.getCode();
+     this.getCode();
   },
   methods: {
     // 获取验证码

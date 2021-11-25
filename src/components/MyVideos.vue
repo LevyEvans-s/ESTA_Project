@@ -8,66 +8,18 @@
                 </div>
                 <button class="right">
                     <img src="../assets/imgs/refresh.png" alt="">
-                    <span>换一换</span>
+                    <span @click="changeVideos">换一换</span>
                 </button>
             </div>
             <div class="video-list">
-                <div class="video-item">
+                <div class="video-item" v-for="(item,index) in videoList" :key=index>
                     <a href="" class="left-img">
-                        <i class="pic" style="background-image:url('../../img/template.png');"></i>
+                        <i class="pic"></i>
                     </a>
                     <div class="right-content">
-                        <a href="" class="title" target="_blank">“中年男人的江湖，没有活得潇洒！”岳不群视角看《笑傲江湖》</a>
+                        <a href="" class="title" target="_blank" v-text="item.title"></a>
                         <p class="info">
-                            16万
-                            次播放
-                        </p>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <a href="" class="left-img">
-                        <i class="pic" style="background-image:url('../../img/template.png');"></i>
-                    </a>
-                    <div class="right-content">
-                        <a href="" class="title" target="_blank">“中年男人的江湖，没有活得潇洒！”岳不群视角看《笑傲江湖》</a>
-                        <p class="info">
-                            16万
-                            次播放
-                        </p>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <a href="" class="left-img">
-                        <i class="pic" style="background-image:url('../../img/template.png');"></i>
-                    </a>
-                    <div class="right-content">
-                        <a href="" class="title" target="_blank">“中年男人的江湖，没有活得潇洒！”岳不群视角看《笑傲江湖》</a>
-                        <p class="info">
-                            16万
-                            次播放
-                        </p>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <a href="" class="left-img">
-                        <i class="pic" style="background-image:url('../../img/template.png');"></i>
-                    </a>
-                    <div class="right-content">
-                        <a href="" class="title" target="_blank">“中年男人的江湖，没有活得潇洒！”岳不群视角看《笑傲江湖》</a>
-                        <p class="info">
-                            16万
-                            次播放
-                        </p>
-                    </div>
-                </div>
-                <div class="video-item">
-                    <a href="" class="left-img">
-                        <i class="pic" style="background-image:url('../../img/template.png');"></i>
-                    </a>
-                    <div class="right-content">
-                        <a href="" class="title" target="_blank">“中年男人的江湖，没有活得潇洒！”岳不群视角看《笑傲江湖》</a>
-                        <p class="info">
-                            16万
+                            {{item.reads}}
                             次播放
                         </p>
                     </div>
@@ -79,7 +31,24 @@
 
 <script>
 export default {
-
+    data(){
+        return{
+            videoList:[]
+        }
+    },
+    methods:{
+        async getVideoList(){
+            let res = await this.$axios.get("/data?num=5")
+            this.videoList=res.data.list
+        },
+        async changeVideos(){
+            let res = await this.$axios.get("/data?num=5")
+            this.videoList=res.data.list
+        }
+    },
+    created(){
+        this.getVideoList()
+    }
 }
 </script>
 
@@ -146,8 +115,8 @@ export default {
                         width:100%;
                         height: 100%;
                         background-size: cover;
+                        background: url('../assets/imgs/Mask Group-3.png');
                         background-position: 50%;
-                        transition: all .5s ease-out .1s;
                     }
                 }
                 .right-content{

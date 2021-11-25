@@ -6,67 +6,13 @@
               <div class="hot-board">
                   <div class="title-bar">
                       <div class="title">热点资讯</div>
-                      <button class="refresh">换一换</button>
+                      <button class="refresh" @click="changeNews">换一换</button>
                   </div>
                   <ul>
-                      <li>
+                      <li v-for="(item,index) in newsList" :key=index>
                           <a href="" class="article-item" target="_blank">
-                              <span class="news-index">1</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">2</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">3</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">4</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">5</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">6</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">7</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">8</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">9</span>
-                              <p class="news-title">十九届六中全会</p>
-                          </a>
-                      </li>
-                      <li>
-                          <a href="" class="article-item" target="_blank">
-                              <span class="news-index">10</span>
-                              <p class="news-title">十九届六中全会</p>
+                              <span class="news-index" v-text="index+1"></span>
+                              <p class="news-title" v-text="item.title">十九届六中全会</p>
                           </a>
                       </li>
                   </ul>
@@ -78,16 +24,37 @@
 
 <script>
 export default {
+    data(){
+        return{
+            newsList:[],
+            videoList:[]
+        }
+    },
+    created(){
+        this.getNewsList()
+    },
     methods:{
         scrollHanlder(){
-            if(window.scrollY>1200){
-                this.$refs.divBox.style.display="block"
-                this.$refs.fixBox.style.position="fixed"
-            }else{
-                this.$refs.divBox.style.display="none"
-                this.$refs.fixBox.style.position="static"
-            }   
-        }
+            if(this.$route.path==='/info'){
+                if(window.scrollY>1200){
+                    this.$refs.divBox.style.display="block"
+                    this.$refs.fixBox.style.position="fixed"
+                }else{
+                    this.$refs.divBox.style.display="none"
+                    this.$refs.fixBox.style.position="static"
+                }   
+            }
+        },
+        async getNewsList() {
+            // 请求默认的列表信息
+             let res = await this.$axios.get("/data?num=10")
+             this.newsList = res.data.list
+        },
+        async changeNews(){
+            let res = await this.$axios.get("/data?num=10")
+            this.newsList=res.data.list
+        },
+        
     },
     mounted(){
         window.addEventListener('scroll',this.scrollHanlder)

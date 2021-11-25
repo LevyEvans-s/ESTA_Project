@@ -63,8 +63,10 @@
                   </div>
               </div>
               <div style="margin-left:30px;left-shrink:0;">
-                  <div class="header-profile" style="width:40px;">
-                      <a href="" class="login-button">登录</a>
+                  <div class="header-profile" style="width:200px;">
+                      <a href="javascript:;" class="login-button" @click="login"  ref="loginBtn">登录</a>
+                      <span ref="info"><span class="red">欢迎您</span>&nbsp;{{this.username}}</span>
+                      <span href="javascript:;" class="logout-button" @click="logout"  ref="logoutBtn">退出</span>
                   </div>
               </div>
           </div>
@@ -74,8 +76,18 @@
 
 <script>
 export default {
+    data(){
+        return {
+            username:localStorage.getItem('username')
+        }
+    },
     mounted(){
         window.addEventListener('scroll',this.handleScroll,false)
+        if(localStorage.getItem('username')){
+            this.$refs.loginBtn.style.display='none'
+            this.$refs.info.style.display='inline-block'
+            this.$refs.logoutBtn.style.display='inline-block'
+        }
     },
     methods:{
         handleScroll(e){
@@ -84,7 +96,13 @@ export default {
             }else{
                 this.$refs.topbar.style.boxShadow="none"
             }
-           
+        },
+        login(){
+            this.$router.push('/login')
+        },
+        logout(){
+            localStorage.clear()
+            location.reload(true)
         }
     }
 }
@@ -190,18 +208,49 @@ export default {
                     }
                 }
             }
-            .header-profile .login-button{
-                width: 100%;
+            .header-profile {
                 text-align: center;
-                display: inline-block;
-                border-radius: 6px;
-                padding: 7px 14px;
-                font-size: 16px;
-                font-weight: 500;
-                line-height: 20px;
-                color:#fff;
-                text-shadow: none;
-                background-color: #f04142;
+                .login-button{
+                    width: 40px;
+                    text-align: center;
+                    display: inline-block;
+                    border-radius: 6px;
+                    padding: 7px 14px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    line-height: 20px;
+                    color:#fff;
+                    text-shadow: none;
+                    background-color: #f04142;
+                }
+                .logout-button{
+                    display: none;
+                    width: 40px;
+                    height: 20px;
+                    text-align: center;
+                    border-radius: 6px;
+                    padding: 7px 14px;
+                    font-size: 16px;
+                    font-weight: 500;
+                    line-height: 20px;
+                    color:#fff;
+                    text-shadow: none;
+                    background-color: #f04142;
+                    cursor: pointer;
+                }
+                &>span{
+                    width: 110px;
+                    height: 20px;
+                    line-height: 20px;
+                    margin-right: 10px;
+                    display: none;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    .red{
+                        color:#f04142;
+                    }
+                }
             }
         }
     }

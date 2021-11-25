@@ -3,10 +3,10 @@ const Mock = require("mockjs");
 const express = require("express");
 const app = express();
 
-// 新闻列表模拟
+// 新闻列表模拟   
 function generatorList(num) {
   return Mock.mock({
-    [`list|${num}`]: [
+    [`list|${num}`]: [ 
       {
         // 模拟 ID，自增方式追加
         "id|+1": 1,

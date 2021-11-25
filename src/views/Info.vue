@@ -1,6 +1,7 @@
 <template>
   <div>
-    <InfoTopbar></InfoTopbar>
+    <div class="root">
+        <InfoTopbar></InfoTopbar>
     <div class="article-detail-container">
       <div class="main">
         <div class="article-content">
@@ -43,16 +44,16 @@
                 <div class="avatar auth-none">                 
                 </div>
                 <div class="comment-input">
-                  <div class="login-mask">
+                  <div class="login-mask" @click="login" ref="loginMask">
                       <p>
                           请先
-                          <button>登录</button>
+                          <button >登录</button>
                           后发表评论~
                       </p>
                   </div>
-                  <textarea disabled class="comment-textarea" placeholder="说点什么吧"></textarea>
+                  <textarea :disabled="disabled" class="comment-textarea" placeholder="说点什么吧..."></textarea>
                   <div class="action">
-                      <button disabled class="submit-button">评论</button>
+                      <button disabled class="submit-btn">评论</button>
                   </div>
                 </div>
               </div>
@@ -116,7 +117,7 @@
                 </li>
               </ul>
             </div>
-            <button class="side-drawer-btn">
+            <button class="side-drawer-btn" @click="showBar">
             <span>
               查看全部
               3915
@@ -132,6 +133,140 @@
           <MyVideos></MyVideos>
       </div>
     </div>   
+    </div>
+    <div class="portal-wrapper drawer-wrapper comment-drawer" style="width:100%;" ref="comments">
+      <div class="mask" ref="mask" @click="clearMask"></div>
+      <div class="drawer">
+        <div class="header">
+          <div class="title">
+            评论
+            <span>3922</span>
+          </div>
+          <button class="close-btn" @click="clearMask"></button>
+        </div>
+        <div class="body" style="overflow-y:hidden;width:calc(100%-17px);">
+          <div class="comment-wrapper">    
+              <ul class="comment-list">
+                <li>
+                  <div class="comment-item">
+                    <a href="">
+                      <div class="avatar auth-none">
+                        <img src="../assets/imgs/none.png" alt="">
+                      </div>
+                    </a>
+                    <div class="comment-info">
+                      <div class="header">
+                        <div class="user-info">
+                          <div class="user-name">
+                            <span class="name">心思淡然</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <p class="content">
+                          合作共赢，高质量发展，为强大的祖国点赞，为习主席点赞
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="comment-item">
+                    <a href="">
+                      <div class="avatar auth-none">
+                        <img src="../assets/imgs/none.png" alt="">
+                      </div>
+                    </a>
+                    <div class="comment-info">
+                      <div class="header">
+                        <div class="user-info">
+                          <div class="user-name">
+                            <span class="name">心思淡然</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <p class="content">
+                          合作共赢，高质量发展，为强大的祖国点赞，为习主席点赞
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="comment-item">
+                    <a href="">
+                      <div class="avatar auth-none">
+                        <img src="../assets/imgs/none.png" alt="">
+                      </div>
+                    </a>
+                    <div class="comment-info">
+                      <div class="header">
+                        <div class="user-info">
+                          <div class="user-name">
+                            <span class="name">心思淡然</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <p class="content">
+                          合作共赢，高质量发展，为强大的祖国点赞，为习主席点赞
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="comment-item">
+                    <a href="">
+                      <div class="avatar auth-none">
+                        <img src="../assets/imgs/none.png" alt="">
+                      </div>
+                    </a>
+                    <div class="comment-info">
+                      <div class="header">
+                        <div class="user-info">
+                          <div class="user-name">
+                            <span class="name">心思淡然</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <p class="content">
+                          合作共赢，高质量发展，为强大的祖国点赞，为习主席点赞
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+                <li>
+                  <div class="comment-item">
+                    <a href="">
+                      <div class="avatar auth-none">
+                        <img src="../assets/imgs/none.png" alt="">
+                      </div>
+                    </a>
+                    <div class="comment-info">
+                      <div class="header">
+                        <div class="user-info">
+                          <div class="user-name">
+                            <span class="name">心思淡然</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="body">
+                        <p class="content">
+                          合作共赢，高质量发展，为强大的祖国点赞，为习主席点赞
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              </ul>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -148,7 +283,8 @@ export default {
       username: "未登录",
       // 新闻列表信息
       newinfo: {},
-    };
+      disabled:true
+    }
   },
   components:{
     InfoTopbar,
@@ -156,7 +292,13 @@ export default {
     MyVideos
   },
   created() {
-    this.getNewsInfo();
+    this.getNewsInfo()
+  },
+  mounted(){
+    if(localStorage.getItem('username')){
+      this.$refs.loginMask.style.display='none'
+      this.disabled=false
+    }
   },
   methods: {
     // 获取新闻列表
@@ -165,6 +307,17 @@ export default {
       let res = await this.$axios.get("/info?id=11");
       this.newinfo = res.data;
     },
+    showBar(){
+      this.$refs.comments.style.display="block"
+      this.$refs.mask.style.opacity="1"
+    },
+    clearMask(){
+        this.$refs.comments.style.display="none"
+        this.$refs.mask.style.opacity="0"
+    },
+    login(){
+      this.$router.push('/login')
+    }
   },
 };
 </script>
@@ -266,6 +419,7 @@ export default {
         border-radius: 8px;
         padding: 16px;
         background: #f8f8f8;
+        flex: 1 1;
         .login-mask{
           position: absolute;
           top: 0;
@@ -291,6 +445,36 @@ export default {
               color:#f04142;
               background:transparent;
             }
+          }
+        }
+        .comment-textarea{
+          display: block;
+          border:0;
+          padding:0;
+          box-sizing: border-box;
+          max-height:72px;
+          width: 100%;
+          height: 24px;
+          font-size: 16px;
+          line-height: 24px;
+          color:#222;
+          outline: none;
+          resize: none;
+          background: #f8f8f8;
+        }
+        .action{
+          width: 100%;
+          text-align: right;
+          margin-top: 12px;
+          .submit-btn{
+            border: none;
+            border-radius:4px;
+            padding: 6px 18px;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 20px;
+            color:#fff;
+            background: #505050;
           }
         }
       }
@@ -374,4 +558,125 @@ export default {
     cursor: pointer;
   }
 }
+
+.drawer-wrapper{
+  display:  none;
+  position: fixed;
+  top:0;
+  left:0;
+  height: 100%;
+  z-index:1000;
+  .mask{
+    position: absolute;
+    top:0;
+    right:0;
+    bottom: 0;
+    left:0;
+    opacity: 0;
+    transition: opacity .3s cubic-bezier(.34,.69,.1,1);
+    background: rgba(0,0,0,0.5);
+  }
+  .drawer{
+    box-sizing: border-box;
+    position: absolute;
+    top:0;
+    right:0;
+    overflow: hidden;
+    width: 458px;
+    height: 100%;
+    background: #fff;
+    transition: transform .3s cubic-bezier(.34,.69,.1,1),-webkit-transform .3s cubic-bezier(.34,.69,.1,1),-moz-transform .3s cubic-bezier(.34,.69,.1,1);
+    transform:translateX(0);
+    &>.header{
+      position: relative;
+      margin:20px 0 16px;
+      padding: 0 44px 0 24px;
+      height: 28px;
+      outline: none;
+      box-sizing: border-box;
+      .title{
+        font-size: 20px;
+        font-weight: 600;
+        line-height: 28px;
+        color:#222;
+      }
+      .close-btn{
+        position: absolute;
+        top:0;
+        right: 16px;
+        border:none;
+        width: 28px;
+        height: 28px;
+        background: url('../assets/imgs/close.png') no-repeat 50%;
+        background-size: contain;
+        cursor: pointer;
+      }
+    }
+    &>.body{
+      width: 100%;
+      position: absolute;
+      top:64px;
+      bottom: 0;
+      .comment-wrapper{
+        padding: 0 24px;
+        .comment-list li{
+          width: 100%;
+          height: 100%;
+          margin:40px 0;
+          .comment-item{
+            display: flex;
+            align-items: flex-start;
+            &>a{
+                margin-right: 12px;
+                .avatar{
+                  position: relative;
+                  display: inline-block;
+                  border: 1px solid #f2f2f2;
+                  border-radius: 50%;
+                  width: 36px;
+                  height: 36px;
+                  background:url('../assets/imgs/none.png') no-repeat 50%;
+                  background-size:contain;
+                  box-sizing: border-box;
+                  img{
+                    border-radius: 50%;
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                  }
+            }
+            }
+            .comment-info{
+              flex:1 1;
+              .header{
+                display: flex;
+                justify-content: space-between;
+                .user-info{
+                  display: flex;
+                  align-items: center;
+                  .user-name{
+                    font-size: 16px;
+                    font-weight: 500;
+                    line-height: 24px;
+                    color:#222;
+                  }
+                }
+              }
+              .body{
+                margin:8px 0 12px;
+                .content{
+                  font-size: 16px;
+                  font-weight: 400;
+                  line-height: 24px;
+                  color:#222;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
 </style>
