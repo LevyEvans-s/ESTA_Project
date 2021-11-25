@@ -10,10 +10,10 @@
                   </div>
                   <ul>
                       <li v-for="(item,index) in newsList" :key=index>
-                          <a href="" class="article-item" target="_blank">
+                          <router-link to="/info?id=12" href="" class="article-item">
                               <span class="news-index" v-text="index+1"></span>
                               <p class="news-title" v-text="item.title">十九届六中全会</p>
-                          </a>
+                          </router-link>
                       </li>
                   </ul>
               </div>

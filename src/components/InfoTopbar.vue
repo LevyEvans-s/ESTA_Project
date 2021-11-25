@@ -8,7 +8,7 @@
                       <ul>
                           <li aria-label="首页">
                               <div class="channel-default-nav-item">
-                                  <a href="">首页</a>
+                                  <router-link to="/home" href="">首页</router-link>
                               </div>
                           </li>
                           <li aria-label="推荐">

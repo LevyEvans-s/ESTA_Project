@@ -108,9 +108,9 @@
           <li  v-for="(item,index) in newsList" :key="index" class="h">
             <div class="card-article">
               <div class="feed-card-article">
-                <a class="title">
+                <router-link to="/info?id=1" class="title">
                   <h2  v-text=item.title></h2>
-                </a>
+                </router-link>
                 <div class="footer-cmp">
                   <div class="left-tools">
                     <div class="author">
@@ -395,6 +395,9 @@ export default {
               h2{
                 font-size: inherit;
                 font-weight: inherit;
+                &:hover{
+                  color: #be1428;
+                }
               }
             }
             .footer-cmp{
