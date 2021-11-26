@@ -24,7 +24,7 @@
           <span class="text">时<br />间<br />表</span>
           <!-- 导航区域 -->
           <ul class="navs">
-            <li >2021</li>
+            <li style="color:#be1428;">2021</li>
             <li>2020</li>
             <li>2019</li>
             <li>2018</li>
@@ -34,7 +34,7 @@
           </ul>
           <!-- 内容区域 -->
           <div class="content">
-            <div>
+            
               <ul class="time">
                 <li class="pic">
                   <img src="../assets/imgs/Mask Group-2.png" alt="" />
@@ -78,7 +78,6 @@
                 </li>
               </ul>
             </div>
-          </div>
         </div>
       </div>
     </div>
@@ -299,13 +298,19 @@ export default {
     color: #be1428;
   }
   .content {
-    width: 90%px;
+    width: 90%;
+    height: 100%;
     position: absolute;
     margin-top: 60px;
-    margin-left: 430px;
+    margin-left:450px;
     .time {
-      li {
-        float: left;
+      width: 1200px;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      li{
+        box-sizing: border-box;
+        align-content: center;
       }
       .pic {
         margin-bottom: 20px;
