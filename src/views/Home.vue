@@ -1,7 +1,8 @@
 <template>
   <div>
     <MyHeader></MyHeader>
-    <!-- 搜索栏 -->
+    <div class="large-container">
+<!-- 搜索栏 -->
     <div class="search-box">
       <div class="search-container">
         <input type="text" value placeholder="   请输入搜索内容" />
@@ -10,9 +11,9 @@
         <div class="hotnews">
           <ul>
             热门关键词:
-            <li>热门关键词</li>
-            <li>热门关键词</li>
-            <li>热门关键词</li>
+            <li>“七一”精神</li>
+            <li>建党100周年</li>
+            <li>红色专题系列讲座</li>
           </ul>
         </div>
       </div>
@@ -21,17 +22,7 @@
     <div class="timetable-box">
       <div class="timetable-container">
         <div class="timetable-wrapper">
-          <span class="text">时<br />间<br />表</span>
-          <!-- 导航区域 -->
-          <ul class="navs">
-            <li style="color:#be1428;">2021</li>
-            <li>2020</li>
-            <li>2019</li>
-            <li>2018</li>
-            <li>2017</li>
-            <li>2016</li>
-            <li>2015</li>
-          </ul>
+          <span class="text">党<br />政<br />要<br />闻</span>
           <!-- 内容区域 -->
           <div class="content">
             
@@ -42,45 +33,47 @@
                   <p class="p2">2021.03</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Group3.png" alt="" />
+                  <p class="p1">新冠疫情表彰大会</p>
+                  <p class="p2">2021.04</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-4.png" alt="" />
+                  <p class="p1">外交出访</p>
+                  <p class="p2">2021.06</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-5.png" alt="" />
+                  <p class="p1">学习党的文化</p>
+                  <p class="p2">2021.07</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-6.png" alt="" />
+                  <p class="p1">中非抗疫</p>
+                  <p class="p2">2021.08</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-7.png" alt="" />
+                  <p class="p1">日常检阅</p>
+                  <p class="p2">2021.09</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-8.png" alt="" />
+                  <p class="p1">双十一物流情况</p>
+                  <p class="p2">2021.11</p>
                 </li>
                 <li class="pic">
-                  <img src="../assets/imgs/Mask Group-2.png" alt="" />
-                  <p class="p1">习大大外交出访</p>
-                  <p class="p2">2021.03</p>
+                  <img src="../assets/imgs/Mask Group-9.png" alt="" />
+                  <p class="p1">彰显大国风范</p>
+                  <p class="p2">2021.12</p>
                 </li>
               </ul>
             </div>
         </div>
       </div>
     </div>
+    </div>
+    
     <!-- 新闻栏 -->
     <div class="channel-wrapper">
       <div class="channel-left">
@@ -107,15 +100,13 @@
           <li  v-for="(item,index) in newsList" :key="index" class="h">
             <div class="card-article">
               <div class="feed-card-article">
-                <router-link to="/info?id=1" class="title">
+                <router-link :to="{name:'Info',params:{id:item.id}}" class="title">
                   <h2  v-text=item.title></h2>
                 </router-link>
                 <div class="footer-cmp">
                   <div class="left-tools">
-                    <div class="author">
-                      <a href="javascript:;" v-text=item.subtitle></a>
-                    </div>
                     <div class="comment">
+                      发布日期：
                       <a href="javascript:;" v-text="item.publishTime"></a>
                     </div>
                   </div>
@@ -129,6 +120,13 @@
         ref="append"
       >
         <HotIssues></HotIssues>
+      </div>
+    </div>
+  </div>
+  <div class="toorbar">
+    <div class="tool-container">
+      <div class="tool-item" @click="backToTop">
+        <img src="../assets/imgs/top.png" alt="" class="icon">
       </div>
     </div>
   </div>
@@ -153,20 +151,20 @@ export default {
     HotIssues,
   },
   created() {
-     this.getNewsList(this.id)
+     this.getNewsList()
   },
   mounted(){
     window.addEventListener('scroll',this.load,true)
   },
   methods: {
-    async getNewsList(id) {
-      // 请求默认的列表信息
+    async getNewsList() {
+      //请求默认的列表信息
       let res = await service.get("/newslist",{
         params:{
-          id:id
+          id:this.id
         }
       })
-      //console.log(res.data.data.newsList)
+      // let res=await this.$axios.get("/data?num=15")
       this.newsList= [...this.newsList,...res.data.data.newsList]
     },
     async load(){
@@ -186,11 +184,23 @@ export default {
       }
        //滚动条到底部的条件
        if(scrollTop+windowHeight >= scrollHeight){ 
+         if(this.id>100){
+            this.$message.warning("没有了~~");
+            return
+          }
           let loadingInstance = this.$loading.service({ fullscreen: true });
           this.id+=10
-          this.getNewsList(this.id)
+          this.getNewsList()
           loadingInstance.close()
        }
+    },
+    backToTop(){
+      var scrollTop = document.documentElement.scrollTop;
+      document.documentElement.style.marginTop = -scrollTop + 'px';
+      document.documentElement.scrollTop = 0;
+      document.documentElement.style.transition = 'all 1s ease-in-out';
+      document.documentElement.style.marginTop = 0;
+      setTimeout(function () { document.documentElement.style.transition = 'none' }, 1000);
     }
   }
 }
@@ -272,8 +282,8 @@ export default {
     margin: 0 100px;
     .text {
       position: absolute;
-      left: 150px;
-      top: 150px;
+      left: 268px;
+      top: 130px;
       font-size: 50px;
       color: #5a5454;
       font-weight: bolder;
@@ -451,30 +461,30 @@ export default {
     position: absolute;
   }
 }
-.bottom {
-  width: 100%;
-  height: 100px;
-  background-color: #384558;
-  position: absolute;
-  left: 0;
-  right: 0;
-  bottom:0;
-  z-index:200;
-  transform: translate3d(0px, 1960px, 0);
-  .bottom-box {
-    margin: 40px 20%;
-    .bottom-left {
-      float: left;
-    }
-    .bottom-right {
-      float: right;
-    }
-    li {
-      font-size: 20px;
-      display: inline-block;
-      margin-right: 20px;
-      color: #fff;
+.left-tools{
+  .author{
+    font-size: 14px;
+    color:#999;
+  }
+}
+.toorbar{
+  position: fixed;
+  right: 40px;
+  bottom: 40px;
+  z-index: 200;
+  .tool-item{
+    text-align: center;
+    cursor: pointer;
+    padding: 12px 0;
+    position: relative;
+    .icon{
+      width: 24px;
+      height: auto;
     }
   }
+}
+.large-container{
+  width: 100%;
+  position: relative;
 }
 </style>

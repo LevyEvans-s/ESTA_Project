@@ -110,7 +110,6 @@ export default {
                 username:this.userInfo.username,
                 password:this.userInfo.password
               }).then(res=>{
-                console.log(res)
                 if(res.data.status===200){              
                   this.$message.success('注册成功')
                   localStorage.setItem("username", this.userInfo.username)                 

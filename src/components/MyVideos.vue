@@ -13,14 +13,15 @@
             </div>
             <div class="video-list">
                 <div class="video-item" v-for="(item,index) in videoList" :key=index>
-                    <a href="" class="left-img">
-                        <i class="pic"></i>
+                    <a :href="item.url_v" class="left-img">
+                        <i class="pic">
+                            <img :src="item.url_p" alt="" style="width:100%;height:100%;">
+                        </i>
                     </a>
                     <div class="right-content">
-                        <a href="" class="title" target="_blank" v-text="item.title"></a>
+                        <a :href="item.url_v" class="title" target="_blank" v-text="item.title"></a>
                         <p class="info">
-                            {{item.reads}}
-                            次播放
+                            {{item.publishTime}}
                         </p>
                     </div>
                 </div>
@@ -30,20 +31,36 @@
 </template>
 
 <script>
+import service from "../util/require.js";
 export default {
     data(){
         return{
-            videoList:[]
+            videoList:[],
+            id:1
         }
     },
     methods:{
         async getVideoList(){
-            let res = await this.$axios.get("/data?num=5")
-            this.videoList=res.data.list
+            // let res = await this.$axios.get("/data?num=5")
+            let res=await service.get('/videolist',{
+                params:{
+                    id:this.id
+                }
+            })
+            this.videoList=res.data.data.videoList
         },
         async changeVideos(){
-            let res = await this.$axios.get("/data?num=5")
-            this.videoList=res.data.list
+            this.id+=5
+            if(this.id>70){
+                this.id=1
+            }
+            let res = await service.get("/videolist",{
+                params:{
+                    id:this.id
+                }
+            })
+            this.videoList=res.data.data.videoList
+            console.log(this.videoList)
         }
     },
     created(){
@@ -115,7 +132,6 @@ export default {
                         width:100%;
                         height: 100%;
                         background-size: cover;
-                        background: url('../assets/imgs/Mask Group-3.png');
                         background-position: 50%;
                     }
                 }

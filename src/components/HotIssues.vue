@@ -10,10 +10,10 @@
                   </div>
                   <ul>
                       <li v-for="(item,index) in newsList" :key=index>
-                          <router-link to="/info?id=12" href="" class="article-item">
+                          <a :href="'/info/'+item.id"  class="article-item">
                               <span class="news-index" v-text="index+1"></span>
-                              <p class="news-title" v-text="item.title">十九届六中全会</p>
-                          </router-link>
+                              <p class="news-title" v-text="item.title"></p>
+                          </a>
                       </li>
                   </ul>
               </div>
@@ -32,8 +32,14 @@ export default {
             id:1
         }
     },
-    created(){
-        this.getNewsList(this.id)
+    async created(){
+        //请求默认的列表信息
+             let res = await service.get("/newslist",{
+                params:{
+                    id:this.id
+                }
+             })
+        this.getNewsList(res)
     },
     methods:{
         scrollHanlder(){
@@ -44,30 +50,25 @@ export default {
                 }else{
                     this.$refs.divBox.style.display="none"
                     this.$refs.fixBox.style.position="static"
-                }   s
+                }   
             }
         },
-        async getNewsList(id) {
-            // 请求默认的列表信息
-             let res = await service.get("/newslist",{
-                params:{
-                    id
-                }
-             })
+        async getNewsList(res) {
+            // let res=await this.$axios.get("/data?num=10")
              this.newsList = res.data.data.newsList
         },
         async changeNews(){
             this.id+=10
-            if(this.id>30){
+            if(this.id>100){
                 this.id=1
             }
-            //console.log(this.id)
-            let res = await service.get("/newslist",{
+            await service.get("/newslist",{
                 params:{
                     id:this.id
                 }
-            })
-            this.newsList=res.data.data.newsList
+             }).then(res=>{     
+               this.getNewsList(res)
+             })   
         },
         
     },

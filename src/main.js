@@ -4,9 +4,9 @@ import App from "./App.vue";
 import router from "./router";
 // 按需引入 ElementUI 相应组件
 import "./plugin/element";
+//配置axios
 import axios from "axios";
-
-axios.defaults.baseURL = "http://localhost:4000";
+axios.defaults.baseURL = "http://121.40.100.87:4000";
 Vue.prototype.$axios = axios;
 
 Vue.config.productionTip = false;

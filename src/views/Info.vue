@@ -5,10 +5,10 @@
     <div class="article-detail-container">
       <div class="main">
         <div class="article-content">
-          <h1>{{newinfo.title}}</h1>
+          <h1>{{title}}</h1>
           <div class="article-meta">
             <span class="original-tag">原创</span>
-            <span>2021-11-20 09:24</span>
+            <span>{{publishTime}}</span>
             <span class="dot">·</span>
             <span class="name">
               <a href="javascript:;">央视网</a>
@@ -18,18 +18,10 @@
             <p>
               <span style="letter-spacing:1px;">
                 <span style="color:#333333;">
-                  {{newinfo.cpa}}
+                  {{newinfo}}
                 </span>
               </span>
             </p>
-           <p>
-              <span style="letter-spacing:1px;">
-                <span style="color:#333333;">
-                  {{newinfo.cpa}}
-                </span>
-              </span>
-            </p>
-            
           </article>
         </div>
         <!-- 评论区开始 -->
@@ -271,7 +263,7 @@
 </template>
 
 <script>
-
+import service from "../util/require.js";
 import InfoTopbar from "../components/InfoTopbar.vue"
 import HotIssues from '../components/HotIssues.vue';
 import MyVideos from "../components/MyVideos.vue"
@@ -282,8 +274,11 @@ export default {
       // 当前登录用户名
       username: "未登录",
       // 新闻列表信息
-      newinfo: {},
-      disabled:true
+      newinfo: "",
+      disabled:true,
+      id:this.$route.params.id,
+      title:'',
+      publishTime:''
     }
   },
   components:{
@@ -291,8 +286,10 @@ export default {
     HotIssues,
     MyVideos
   },
-  created() {
+  async created() {
     this.getNewsInfo()
+    //通过页面传递过来的动态路由参数id 进行axios请求新闻的详情
+    //再讲用户的详情信息渲染到页面上
   },
   mounted(){
     if(localStorage.getItem('username')){
@@ -301,11 +298,15 @@ export default {
     }
   },
   methods: {
-    // 获取新闻列表
-    async getNewsInfo() {
-      // 请求默认的列表信息
-      let res = await this.$axios.get("/info?id=11");
-      this.newinfo = res.data;
+     async getNewsInfo() {
+      let res=await service.get("/newsdetial",{
+        params:{
+          id:this.id
+        }
+      })
+      this.newinfo = res.data.content;
+      this.title=res.data.title;
+      this.publishTime=res.data.publishTime
     },
     showBar(){
       this.$refs.comments.style.display="block"
@@ -321,7 +322,7 @@ export default {
   },
 };
 </script>
-
+1
 <style scoped lang="scss">
 .article-detail-container{
   margin:40px auto 0;
